@@ -14,6 +14,8 @@ import {
   SETUP_USER_BEGIN,
   SETUP_USER_SUCCESS,
   SETUP_USER_ERROR,
+  TOGGLE_SIDEBAR,
+  LOGOUT_USER,
 } from "./actions";
 const AppContext = createContext();
 
@@ -30,6 +32,7 @@ const initialState = {
   token: token,
   userLocation: userLocation || "",
   jobLocation: "",
+  showSidebar: false,
 };
 
 function AppProvier({ children }) {
@@ -51,7 +54,7 @@ function AppProvier({ children }) {
     localStorage.setItem("token", token);
     localStorage.setItem("location", location);
   };
-  const removeUserToLocalStorage = ({ user, token, location }) => {
+  const removeUserToLocalStorage = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("location");
@@ -136,6 +139,15 @@ function AppProvier({ children }) {
     clearAlert();
   };
 
+  const toggleSidebar = () => {
+    dispatch({ type: TOGGLE_SIDEBAR });
+  };
+
+  const logoutUser = () => {
+    dispatch({ type: LOGOUT_USER })
+    removeUserToLocalStorage()
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -144,6 +156,8 @@ function AppProvier({ children }) {
         // registerUser,
         // loginUser,
         setupUser,
+        toggleSidebar,
+        logoutUser
       }}
     >
       {children}
@@ -155,5 +169,5 @@ const useAppContext = () => {
   return useContext(AppContext);
 };
 
-export { useAppContext };
+export { useAppContext, initialState };
 export default AppProvier;
