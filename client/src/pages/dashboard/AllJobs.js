@@ -1,5 +1,13 @@
-function AllJobs () {
-    return <h1>All jobs</h1>
+import Wrapper from "../../assets/wrappers/JobsContainer";
+import { JobsContainer, SearchContainer } from "../../components";
+
+function AllJobs() {
+  return (
+    <>
+      <SearchContainer />
+      <JobsContainer />
+    </>
+  );
 }
 
 export default AllJobs;
