@@ -1,4 +1,5 @@
 timeout 3
 cd C:\Users\Jeet-Srimani\Documents\GitHub\jobify
-npm start
+@REM npm start
+node server
 cmd /k

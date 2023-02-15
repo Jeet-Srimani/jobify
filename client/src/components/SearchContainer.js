@@ -1,11 +1,13 @@
 import { FormRow, FormRowSelect } from ".";
 import { useAppContext } from "../context/appContext";
 import Wrapper from "../assets/wrappers/SearchContainer";
+import { useState, useMemo } from "react";
 
 function SearchContainer() {
+  const [localSearch, setLocalSearch] = useState('');
+
   const {
     isLoading,
-    search,
     searchStatus,
     searchType,
     sort,
@@ -17,16 +19,26 @@ function SearchContainer() {
   } = useAppContext();
 
   const searchHandler = (e) => {
-    if (isLoading) {
-      return;
-    }
     handleChange({ name: e.target.name, value: e.target.value });
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
+    setLocalSearch('')
     clearFilters();
-  }
+  };
+
+  const debounce = () => {
+    let timeoutId;
+    return (e) => {
+      setLocalSearch(e.target.value);
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        handleChange({ name: e.target.name, value: e.target.value });
+      }, 1000);
+    };
+  };
+  const optimizedDebounce = useMemo(() => debounce(), []);
 
   return (
     <Wrapper>
@@ -36,8 +48,8 @@ function SearchContainer() {
           <FormRow
             type="text"
             name="search"
-            value={search}
-            handleChange={searchHandler}
+            value={localSearch}
+            handleChange={optimizedDebounce}
           />
 
           <FormRowSelect
@@ -62,12 +74,14 @@ function SearchContainer() {
             handleChange={searchHandler}
             list={sortOptions}
           />
-          
+
           <button
             className="btn btn-block btn-danger"
             disabled={isLoading}
             onClick={submitHandler}
-          >Clear Filters</button>
+          >
+            Clear Filters
+          </button>
         </div>
       </form>
     </Wrapper>
